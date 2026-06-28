@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>真話翻譯機</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Decode MVP</p>
+          <h1>真話翻譯機</h1>
+        </div>
+        <button class="ghost" id="reset">清空</button>
+      </header>
+
+      <div class="demoGrid" id="demoGrid"></div>
+
+      <div class="workspace">
+        <section class="panel inputPanel">
+          <div class="labelRow"><label for="input">原文</label><span id="count">0 字</span></div>
+          <textarea id="input" placeholder="貼上公告、聲明稿、Email、顧問話、另一半訊息..."></textarea>
+          <button class="primary" id="decode">翻譯成人話</button>
+        </section>
+
+        <aside class="meter">
+          <div class="meterTop"><span id="label">等待解碼</span><strong id="confidence">--</strong></div>
+          <div class="bar"><i id="bar"></i></div>
+          <p id="read">貼上一段人類加密訊息，看看它真正想說什麼。</p>
+          <ul id="signals"></ul>
+          <div class="notice">不保證改善人際關係，但可能改善閱讀效率。</div>
+        </aside>
+      </div>
+
+      <section class="results" id="results" hidden></section>
+      <footer>本產品不保證改善人際關係，但可能改善閱讀效率。</footer>
+      <div class="toast" id="toast" hidden></div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
