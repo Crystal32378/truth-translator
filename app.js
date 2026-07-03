@@ -77,6 +77,17 @@
         { keys: ["continue to monitor", "monitor the situation", "密切關注", "持續觀察"], label: "危機回應", read: "觀望但不能說沒招", out: ["我們也還不知道怎麼辦。", "先看風向。", "我們正在假裝有掌握狀況。", "觀察中，翻譯：沒招。", "你說密切關注，是因為現在沒有解法。關注不是行動，是等待別人先出事。"] }
       ];
 
+      // Per-mode meta: spice level (1-3 dots) + short subtitle (≤ ~12 chars).
+      // Spice rises with brutality. 真話蒟蒻 voice: playful frame, sharp words.
+      const MODES = {
+        human:   { spice: 1, sub: "最安全的版本" },
+        subtext: { spice: 2, sub: "話裡那層意思" },
+        belief:  { spice: 2, sub: "想讓你信的事" },
+        meme:    { spice: 3, sub: "適合截圖那句" },
+        nuclear: { spice: 3, sub: "不留情面那擊" }
+      };
+      const SPICE_MAX = 3;
+
       const input = document.querySelector("#input");
       const count = document.querySelector("#count");
       const results = document.querySelector("#results");
@@ -175,21 +186,59 @@
           ["鄉民翻譯", "meme", "meme"],
           ["核彈翻譯", "nuclear", "nuclear"]
         ];
-        results.hidden = false;
-        results.innerHTML = cards.map(([title, key, tone]) => `
-          <section class="result ${tone}">
-            <div class="resultHead"><h3>${title}</h3><button class="copyOne" data-copy="${key}" aria-label="複製${title}">⧉</button></div>
+        // Render spice dots + short subtitle per mode.
+        const spice = (n) => Array.from({ length: SPICE_MAX }, (_, i) =>
+          `<i class="${i < n ? "on" : ""}"></i>`).join("");
+        // Nuclear becomes a self-contained screenshot meme card.
+        const nuclearCard = ([title, key, tone]) => {
+          const m = MODES[key];
+          return `<section class="result ${tone} memeCard" data-copy="${key}" role="button" tabindex="0" aria-label="點擊複製${title}">
+            <div class="resultHead">
+              <div class="titleCol"><h3>${title}</h3><span class="spice">${spice(m.spice)}</span></div>
+              <button class="copyOne" data-copy="${key}" aria-label="複製${title}">⧉</button>
+            </div>
+            <p class="memeLine">${output[key]}</p>
+            <div class="memeFoot"><span class="stamp">真話蒟蒻</span><span class="hint">點卡片複製</span></div>
+          </section>`;
+        };
+        const normalCard = ([title, key, tone]) => {
+          const m = MODES[key];
+          return `<section class="result ${tone}" data-copy="${key}" role="button" tabindex="0" aria-label="點擊複製${title}">
+            <div class="resultHead">
+              <div class="titleCol"><h3>${title}</h3><span class="spice">${spice(m.spice)}</span></div>
+              <button class="copyOne" data-copy="${key}" aria-label="複製${title}">⧉</button>
+            </div>
+            <p class="sub">${m.sub}</p>
             <p>${output[key]}</p>
-          </section>
-        `).join("") + `
+          </section>`;
+        };
+        results.hidden = false;
+        results.innerHTML = cards.slice(0, 4).map(normalCard).join("") + nuclearCard(cards[4]) + `
           <p class="warning">核彈翻譯攻擊性較強，適合自用醒腦；真的要貼出去，請先深呼吸。</p>
           <div class="actions">
             <button id="copyAll">複製整段</button>
             <button id="share">分享給受害者</button>
           </div>
         `;
-        results.querySelectorAll("[data-copy]").forEach(button => {
-          button.addEventListener("click", () => copyText(output[button.dataset.copy], "已複製"));
+        // Keep explicit copy buttons working.
+        results.querySelectorAll("[data-copy] .copyOne").forEach(button => {
+          button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            copyText(output[button.dataset.copy], "已複製");
+          });
+        });
+        // Whole-card tap-to-copy, guarded against text selection.
+        results.querySelectorAll(".result[data-copy]").forEach(card => {
+          const press = (e) => {
+            const sel = window.getSelection();
+            if (sel && sel.toString().length > 0) return;          // user was selecting text
+            if (e.target.closest("button")) return;                // copy button handles itself
+            copyText(output[card.dataset.copy], "已複製");
+          };
+          card.addEventListener("click", press);
+          card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); press(e); }
+          });
         });
         results.querySelector("#copyAll").addEventListener("click", () => copyText(shareText(), "整段已複製"));
         results.querySelector("#share").addEventListener("click", async () => {
