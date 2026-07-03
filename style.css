@@ -30,6 +30,8 @@
       .topbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
       .eyebrow { margin: 0 0 4px; color: var(--amber); font-size: 13px; font-weight: 800; }
       h1 { margin: 0; font-size: clamp(38px, 6vw, 72px); line-height: 1; letter-spacing: 0; }
+      .subbrand { margin: 8px 0 0; color: var(--muted); font-size: 15px; }
+      .subbrand b { color: var(--teal); }
       .ghost, .demo, .actions button, .copyOne {
         border: 1px solid var(--line);
         background: rgba(21, 23, 26, .88);
@@ -81,15 +83,33 @@
       .results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
       .result { padding: 14px; min-height: 148px; }
       .resultHead { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+      .titleCol { display: flex; align-items: center; gap: 8px; min-width: 0; }
       .result h3 { margin: 0; font-size: 15px; }
+      .spice { display: inline-flex; gap: 3px; }
+      .spice i { width: 6px; height: 6px; border-radius: 50%; background: #3a3f46; }
+      .spice i.on { background: var(--rose); }
       .result p { font-size: 20px; margin: 16px 0 0; font-weight: 900; }
+      .result p.sub { margin: 6px 0 0; font-size: 13px; font-weight: 600; color: var(--muted); }
       .copyOne { width: 36px; min-height: 34px; border-radius: 8px; flex: 0 0 auto; }
+      /* Whole-card tap-to-copy affordance. */
+      .result[data-copy] { cursor: pointer; transition: border-color .14s ease, transform .06s ease; }
+      .result[data-copy]:hover { border-color: #56606b; }
+      .result[data-copy]:active { transform: scale(.992); }
       .human { border-color: rgba(112, 167, 255, .42); }
       .subtext { border-color: rgba(242, 184, 75, .42); }
       .belief { border-color: rgba(130, 206, 122, .42); }
       .meme { border-color: rgba(232, 109, 121, .46); background: linear-gradient(180deg, rgba(232, 109, 121, .13), rgba(21, 23, 26, .9)); }
-      .nuclear { grid-column: 1 / -1; border-color: rgba(239, 68, 68, .62); background: linear-gradient(180deg, rgba(239, 68, 68, .16), rgba(21, 23, 26, .94)); }
-      .nuclear h3 { color: #ff8b8b; }
+      /* Nuclear = standalone screenshot meme card. 可愛的框，狠的字。 */
+      .memeCard { grid-column: 1 / -1; min-height: auto; padding: 26px 24px 20px;
+        border: 1px solid rgba(239, 68, 68, .62);
+        background: linear-gradient(180deg, rgba(239, 68, 68, .18), rgba(11, 12, 14, .97));
+        border-radius: 18px; }
+      .memeCard h3 { color: #ff8b8b; font-size: 17px; }
+      .memeLine { font-size: clamp(24px, 5.4vw, 38px) !important; line-height: 1.4; margin: 18px 0 22px !important; font-weight: 950; color: #fff; }
+      .memeFoot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; }
+      .stamp { font-size: 13px; font-weight: 850; color: var(--teal); border: 1px solid rgba(75, 199, 176, .5); border-radius: 999px; padding: 3px 10px; }
+      .hint { font-size: 12px; color: var(--muted); }
+      .nuclear { grid-column: 1 / -1; }
       .warning { grid-column: 1 / -1; color: var(--muted); font-size: 13px; text-align: center; }
       .actions { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
       .actions button { border-radius: 8px; padding: 0 14px; font-weight: 900; }
@@ -113,4 +133,6 @@
         .demoGrid { grid-template-columns: 1fr 1fr; }
         textarea { min-height: 220px; }
         .actions { grid-template-columns: 1fr; }
+        .memeCard { padding: 22px 18px 16px; }
+        .memeLine { margin: 14px 0 18px !important; }
       }
